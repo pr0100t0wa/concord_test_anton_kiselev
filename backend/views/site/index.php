@@ -1,17 +1,20 @@
 <?php
 
+use \yii\helpers\Url;
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+$this->title = 'Test application!';
 ?>
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>Congratulations!</h1>
+        <h1>Test application!</h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+        <p>
+            <a class="btn btn-lg btn-success" href="<?= Url::to(['user/index']); ?>">Users</a>
+            <a class="btn btn-lg btn-success" href="<?= Url::to(['group/index']); ?>">Groups</a>
+        </p>
     </div>
 
     <div class="body-content">

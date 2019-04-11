@@ -12,22 +12,45 @@ class m130524_201442_init extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('{{%user}}', [
+        $this->createTable('{{%users}}', [
             'id' => $this->primaryKey(),
-            'username' => $this->string()->notNull()->unique(),
-            'auth_key' => $this->string(32)->notNull(),
-            'password_hash' => $this->string()->notNull(),
-            'password_reset_token' => $this->string()->unique(),
-            'email' => $this->string()->notNull()->unique(),
-
-            'status' => $this->smallInteger()->notNull()->defaultValue(10),
-            'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull(),
+            'login' => $this->string(32)->notNull()->unique(),
+            'password' => $this->string(32)->notNull(),
+            'email' => $this->string(64)->notNull()->unique(),
+            'group_id' => $this->integer()->notNull(),
+            'photo' => $this->string(256)->notNull(),
+            'created_at' => $this->datetime()->notNull(),
+            'updated_at' => $this->datetime(),
         ], $tableOptions);
+
+        $this->alterColumn('{{%users}}', 'id', $this->integer(11).' NOT NULL AUTO_INCREMENT');
+
+        $this->createTable('{{%groups}}', [
+            'id' => $this->primaryKey(),
+            'name' => $this->string()->notNull(),
+        ], $tableOptions);
+
+        $this->alterColumn('{{%groups}}', 'id', $this->integer(11).' NOT NULL AUTO_INCREMENT');
+
+        $this->createIndex(
+            'idx-users-group_id',
+            'users',
+            'group_id'
+        );
+
+        $this->addForeignKey(
+            'fk-user-group_id',
+            'users',
+            'group_id',
+            'groups',
+            'id',
+            'CASCADE'
+        );
     }
 
     public function down()
     {
-        $this->dropTable('{{%user}}');
+        $this->dropTable('{{%users}}');
+        $this->dropTable('{{%groups}}');
     }
 }

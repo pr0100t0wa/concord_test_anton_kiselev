@@ -28,7 +28,6 @@ class SiteController extends Controller
                     [
                         'actions' => ['logout', 'index'],
                         'allow' => true,
-                        'roles' => ['@'],
                     ],
                 ],
             ],
@@ -70,13 +69,11 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
 
         $model = new LoginForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->redirect(['user/index']);
         } else {
             $model->password = '';
 
