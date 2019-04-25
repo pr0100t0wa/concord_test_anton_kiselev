@@ -82,22 +82,28 @@ class UserController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             // get the uploaded file instance. for multiple file uploads
             // the following data will return an array
-
+            $transaction=$model->db->beginTransaction();
+            $model->save(false);
+            if($model->id){
                 $photo = UploadedFile::getInstance($model, 'photo');
-            if ($photo) {
-                // store the source file name
-                $ext = end((explode(".", $photo->name)));
-                $path = Yii::getAlias('@webroot') . $model->photoPath . $model->id . ".{$ext}";
-                $model->photo = Yii::getAlias('@web') . $model->photoPath . $model->id . ".{$ext}";;
-            }
-            if($model->save()){
                 if ($photo) {
+                    // store the source file name
+                    $ext = end((explode(".", $photo->name)));
+                    $path = Yii::getAlias('@webroot') . $model->photoPath . $model->id . ".{$ext}";
+                    $model->photo = Yii::getAlias('@web') . $model->photoPath . $model->id . ".{$ext}";
                     $photo->saveAs($path);
                 }
+                if ($model->save(true)){
+                    $transaction->commit();
+                }elseif(isset($path)){
+                    unlink($path);
+                }
                 return $this->redirect(['view', 'id'=>$model->id]);
+            }else{
+                $transaction->rollBack();
             }
-        }
 
+        }
         return $this->render('create', [
             'model' => $model,
         ]);

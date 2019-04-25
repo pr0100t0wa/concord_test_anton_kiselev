@@ -49,8 +49,6 @@ class User extends \yii\db\ActiveRecord
         return [
             [['login', 'password', 'email', 'group_id',  'created_at'], 'required'],
             [['group_id'], 'integer'],
-            [['photo'], 'safe'],
-            [['photo'], 'file', 'extensions'=>'jpg, gif, png'],
             [['created_at', 'updated_at'], 'safe'],
             [['login', 'password_field'], 'string', 'max' => 32],
             [['email'], 'string', 'max' => 64],
